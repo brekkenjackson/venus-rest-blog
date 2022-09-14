@@ -3,6 +3,9 @@ import CreateView from "../createView.js"
 let me;
 export default function prepareUserHTML(props) {
     me = props.me;
+
+    const userPostHTML = createPostHTML(me);
+
     // make the user's original pw available somewhere in here
     return `
         <h1>User Info</h1>
@@ -13,6 +16,7 @@ export default function prepareUserHTML(props) {
             <label for="oldpassword">Please enter your current password</label>
             <input type="password" id="oldpassword" name="oldpassword">
             <br>
+            
             <label for="newpassword">New password</label>
             <input type="password" id="newpassword" name="newpassword">
             <br>
@@ -23,7 +27,40 @@ export default function prepareUserHTML(props) {
             <button id="toggleShowPassword" name="toggleShowPassword">Show Password?</button>
             <button id="updatePassword" name="updatePassword">Save New Password</button>
         </form>
+        
+        <hr>
+        ${userPostHTML}
+        
     `;
+}
+
+function createPostHTML(user) {
+    let html = `
+        <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">Title</th>
+            <th scope="col">Content</th>
+        </tr>
+        </thead>
+        <tbody>
+    `;
+
+    // add a row to the table for each user post
+    for (let i = 0; i < user.posts.length; i++) {
+        const post = user.posts[i];
+        html += `<tr>
+            <td>${post.title}</td>
+            <td>${post.content}</td>
+            </tr>`;
+    }
+
+    // finish the table
+    html += `
+        </tbody>
+        </table>`;
+
+    return html;
 }
 
 export function prepareUserJS() {
@@ -49,7 +86,7 @@ function doSavePasswordHandler() {
         const url = `${USER_API_BASE_URL}/${me.id}/updatePassword?oldPassword=${oldPassword}&newPassword=${newPassword}`
 
         fetch(url, request)
-            .then(function(response) {
+            .then(function(r) {
                 CreateView("/");
             });
     });
@@ -58,6 +95,7 @@ function doSavePasswordHandler() {
 function doTogglePasswordHandler() {
     const button = document.querySelector("#toggleShowPassword");
     button.addEventListener("click", function(event) {
+        // grab a reference to confirmpassword
         const oldPassword = document.querySelector("#oldpassword");
         const newPassword = document.querySelector("#newpassword");
         const confirmPassword = document.querySelector("#confirmpassword");

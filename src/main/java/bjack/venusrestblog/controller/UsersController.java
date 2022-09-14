@@ -1,20 +1,38 @@
 package bjack.venusrestblog.controller;
 
+import bjack.venusrestblog.data.Post;
 import bjack.venusrestblog.data.User;
 import bjack.venusrestblog.data.UserRole;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/users", produces = "application/json")
 public class UsersController {
-    private final List<User> users = new ArrayList<>(List.of(new User(1, "docrob", "docrob@docrob.com", "12345", LocalDate.now(), UserRole.ADMIN)));
+    private final List<User> users = new ArrayList<>();
+
     private long nextId = 2;
+
+    @PostConstruct
+    public void init() {
+        User me = new User(1, "bjack", "bjack@bjack.com", "12345", LocalDate.now(), UserRole.ADMIN, new ArrayList<>());
+        users.add(me);
+
+        Post myPost = new Post(100L, "doc post 1", "post 1 from doc", null, null);
+        me.getPosts().add(myPost);
+
+        myPost = new Post(101L, "doc post 2", "lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem lorem ", null, null);
+        me.getPosts().add(myPost);
+    }
 
     @GetMapping("")
     public List<User> fetchUsers() {
@@ -131,10 +149,10 @@ public class UsersController {
     }
 
     @PutMapping("/{id}/updatePassword")
-    private void updatePassword(@PathVariable Long id, @RequestParam(required = false) String oldPassword, @Valid @Size(min = 3) @RequestParam String newPassword) {
+    private void updatePassword(@PathVariable Long id, @RequestParam(required = false) String oldPassword, @RequestParam String newPassword) {
         User user = findUserById(id);
         if(user == null) {
-            throw new RuntimeException("cannot find user " + id);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User id " + id + " not found");
         }
 
         // compare old password with saved pw
@@ -144,7 +162,7 @@ public class UsersController {
 
         // validate new password
         if(newPassword.length() < 3) {
-            throw new RuntimeException("new pw length must be at least 3");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "new pw length must be at least 3 characters");
         }
 
         user.setPassword(newPassword);
