@@ -1,6 +1,6 @@
 package bjack.venusrestblog.controller;
 
-import bjack.venusrestblog.FakeDogFactGateway;
+import bjack.venusrestblog.dog_stuff.FakeDogFactGateway;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;

@@ -1,4 +1,4 @@
-package bjack.venusrestblog;
+package bjack.venusrestblog.dog_stuff;
 
 public class FakeDogFactGateway {
 
