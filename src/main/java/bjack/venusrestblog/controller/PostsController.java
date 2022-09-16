@@ -43,17 +43,14 @@ public class PostsController {
     @PostMapping("")
     public void createPost(@RequestBody Post newPost) {
 
-        // use docrob as author by default
-        User author = usersRepository.findById(1L).get();
+        User author = usersRepository.findById(3L).get();
         newPost.setAuthor(author);
-        newPost.setCategories(new ArrayList<>());
-
-        // use first 2 categories for the post by default
-        Category cat1 = categoriesRepository.findById(1L).get();
-        Category cat2 = categoriesRepository.findById(2L).get();
-
-        newPost.getCategories().add(cat1);
-        newPost.getCategories().add(cat2);
+//        newPost.setCategories(new ArrayList<>());
+//        Category cat1 = categoriesRepository.findById(1L).get();
+//        Category cat2 = categoriesRepository.findById(2L).get();
+//
+//        newPost.getCategories().add(cat1);
+//        newPost.getCategories().add(cat2);
 
         postsRepository.save(newPost);
     }

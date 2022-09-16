@@ -56,9 +56,7 @@ public class UsersController {
 
     @PostMapping("/create")
     public void createUser(@RequestBody User newUser) {
-        // TODO: validate new user fields
-
-        // don't need the below line at this point but just for kicks
+        System.out.println("newUser = " + newUser);
         newUser.setCreatedAt(LocalDate.now());
         usersRepository.save(newUser);
     }

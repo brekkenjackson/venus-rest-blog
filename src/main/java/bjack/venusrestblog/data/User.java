@@ -2,6 +2,7 @@ package bjack.venusrestblog.data;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -30,7 +31,7 @@ public class User {
     @Column(nullable = false, length = 100)
     private String email;
 
-    @ToString.Exclude
+    @ToStringExclude
     @Column(nullable = false, length = 100)
     private String password;
 
@@ -44,6 +45,7 @@ public class User {
 
     @OneToMany(mappedBy = "author")
     @JsonIgnoreProperties("author")
+    @ToString.Exclude
     private Collection<Post> posts;
 
 }
