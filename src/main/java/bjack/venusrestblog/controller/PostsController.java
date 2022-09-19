@@ -8,6 +8,7 @@ import bjack.venusrestblog.misc.FieldHelper;
 import bjack.venusrestblog.repository.CategoriesRepository;
 import bjack.venusrestblog.repository.PostsRepository;
 import bjack.venusrestblog.repository.UsersRepository;
+import bjack.venusrestblog.service.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
