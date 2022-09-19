@@ -23,6 +23,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(value = "/api/posts", produces = "application/json")
 public class PostsController {
+    private EmailService emailService;
     private PostsRepository postsRepository;
     private UsersRepository usersRepository;
     private CategoriesRepository categoriesRepository;
@@ -54,6 +55,9 @@ public class PostsController {
 //        newPost.getCategories().add(cat2);
 
         postsRepository.save(newPost);
+
+        emailService.prepareAndSend(newPost, "Hey man you made a post", "See subject");
+
     }
 
     @DeleteMapping("/{id}")

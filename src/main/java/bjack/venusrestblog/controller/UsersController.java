@@ -2,15 +2,19 @@ package bjack.venusrestblog.controller;
 
 import bjack.venusrestblog.data.Post;
 import bjack.venusrestblog.data.User;
+import bjack.venusrestblog.data.UserRole;
+import bjack.venusrestblog.dto.UserFetchDTO;
 import bjack.venusrestblog.misc.FieldHelper;
 import bjack.venusrestblog.repository.UsersRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,10 +23,24 @@ import java.util.Optional;
 @RequestMapping(value = "/api/users", produces = "application/json")
 public class UsersController {
     private UsersRepository usersRepository;
+    private PasswordEncoder passwordEncoder;
+
 
     @GetMapping("")
-    public List<User> fetchUsers() {
-        return usersRepository.findAll();
+    public List<UserFetchDTO> fetchUsers() {
+//        return usersRepository.fetchUserDTOs();
+        List<User> users = usersRepository.findAll();
+        List<UserFetchDTO> userDTOs = new ArrayList<>();
+
+        for(User user : users) {
+            UserFetchDTO userDTO = new UserFetchDTO();
+            userDTO.setId(user.getId());
+            userDTO.setUserName(user.getUserName());
+            userDTO.setEmail(user.getEmail());
+            userDTOs.add(userDTO);
+        }
+
+        return userDTOs;
     }
 
     @GetMapping("/{id}")
@@ -56,7 +74,14 @@ public class UsersController {
 
     @PostMapping("/create")
     public void createUser(@RequestBody User newUser) {
-        System.out.println("newUser = " + newUser);
+        // TODO: validate new user fields
+        newUser.setRole(UserRole.USER);
+
+        String plainTextPassword = newUser.getPassword();
+        String encryptedPassword = passwordEncoder.encode(plainTextPassword);
+        newUser.setPassword(encryptedPassword);
+
+        // don't need the below line at this point but just for kicks
         newUser.setCreatedAt(LocalDate.now());
         usersRepository.save(newUser);
     }
