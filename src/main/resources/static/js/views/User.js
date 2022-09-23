@@ -16,7 +16,6 @@ export default function prepareUserHTML(props) {
             <label for="oldpassword">Please enter your current password</label>
             <input type="password" id="oldpassword" name="oldpassword">
             <br>
-            
             <label for="newpassword">New password</label>
             <input type="password" id="newpassword" name="newpassword">
             <br>
@@ -47,12 +46,14 @@ function createPostHTML(user) {
     `;
 
     // add a row to the table for each user post
-    for (let i = 0; i < user.posts.length; i++) {
-        const post = user.posts[i];
-        html += `<tr>
-            <td>${post.title}</td>
-            <td>${post.content}</td>
-            </tr>`;
+    if(user.posts) {
+        for (let i = 0; i < user.posts.length; i++) {
+            const post = user.posts[i];
+            html += `<tr>
+                <td>${post.title}</td>
+                <td>${post.content}</td>
+                </tr>`;
+        }
     }
 
     // finish the table
@@ -86,7 +87,7 @@ function doSavePasswordHandler() {
         const url = `${USER_API_BASE_URL}/${me.id}/updatePassword?oldPassword=${oldPassword}&newPassword=${newPassword}`
 
         fetch(url, request)
-            .then(function(r) {
+            .then(function(response) {
                 CreateView("/");
             });
     });

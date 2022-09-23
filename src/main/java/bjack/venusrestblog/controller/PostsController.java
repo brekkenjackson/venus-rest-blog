@@ -12,6 +12,7 @@ import bjack.venusrestblog.service.EmailService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -43,10 +44,14 @@ public class PostsController {
     }
 
     @PostMapping("")
-    public void createPost(@RequestBody Post newPost) {
-
-        User author = usersRepository.findById(3L).get();
+    public void createPost(@RequestBody Post newPost, OAuth2Authentication auth) {
+        String userName = auth.getName();
+        User author = usersRepository.findByUserName(userName);
         newPost.setAuthor(author);
+
+//        User author = usersRepository.findById(3L).get();
+//        newPost.setAuthor(author);
+
 //        newPost.setCategories(new ArrayList<>());
 //        Category cat1 = categoriesRepository.findById(1L).get();
 //        Category cat2 = categoriesRepository.findById(2L).get();
